@@ -1,0 +1,23 @@
+.Ball {
+    background-color: tomato;
+    border-radius: 50%;
+    color: white;
+    display: inline-block;
+    width: 3em;
+    height: 2.25em;
+    padding-top: 0.75em;
+    text-align: center;
+    margin-right: 0.5em;
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+
+/* .Lottery {
+    border: solid 2px gray;
+    padding: 1em 0 2em 0;
+    text-align: center;
+    margin: 1em auto auto;
+    border-radius: 10px;
+    width: 40em;
+} */
