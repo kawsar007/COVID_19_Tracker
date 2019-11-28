@@ -13,7 +13,7 @@ class CoinContainer extends Component {
     }
 
     state = {
-        currCoin: null,
+        currCoin: '',
         nFlips: 0,
         nHeads: 0,
         nTails: 0
