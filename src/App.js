@@ -4,6 +4,8 @@ import './App.css';
 import { FormControl, Select, MenuItem, Card, CardContent } from '@material-ui/core';
 import InfoBox from './Components/InfoBox';
 import Map from './Components/Map/map';
+import Table from './Sidebar/Table';
+import LineGraph from './Sidebar/Graph';
 function App() {
   // All Countrys show state
   const [ countries, setCountries ] = useState([]);
@@ -11,6 +13,8 @@ function App() {
   const [ country, setCountry ] = useState('worldwide');
   // Individual Country Information state
   const [ countryInfo, setCountryInfo ] = useState({});
+  // 
+  const [ tableData, setTableData ] = useState([]);
 
   // All Country Data
   useEffect(() => {
@@ -31,7 +35,9 @@ function App() {
              name: country.country,
              value: country.countryInfo.iso2,
            }))
+           setTableData(data)
            setCountries(countries)
+           console.log('All Data: ', data)
          })
          
     }
@@ -100,9 +106,11 @@ function App() {
       <Card className="app_right">
          <CardContent>
             <h3>Live cases by country</h3>
-            <h3>Worldwide new cases</h3>
+            <Table countries={tableData}/>
+            <LineGraph/>
          </CardContent>
       </Card>
+      
     </div>
   );
 }
