@@ -5,7 +5,9 @@ import { FormControl, Select, MenuItem, Card, CardContent } from '@material-ui/c
 import InfoBox from './Components/InfoBox';
 import Map from './Components/Map/map';
 import Table from './Sidebar/Table';
+import { sortData } from './utiliy';
 import LineGraph from './Sidebar/Graph';
+import "leaflet/dist/leaflet.css";
 function App() {
   // All Countrys show state
   const [ countries, setCountries ] = useState([]);
@@ -14,7 +16,13 @@ function App() {
   // Individual Country Information state
   const [ countryInfo, setCountryInfo ] = useState({});
   // 
-  const [ tableData, setTableData ] = useState([]);
+  const [ tableData, setTableData ] = useState([]); 
+
+  const [ mapCenter, setMapCenter ] = useState({ lat: 34.80764, lng: -40.4796 });
+
+  const [ mapZoom, setMapZoom ] = useState(3);
+
+  const [mapCountries, setMapCountries] = useState([]);
 
   // All Country Data
   useEffect(() => {
@@ -31,13 +39,16 @@ function App() {
       await fetch("https://disease.sh/v3/covid-19/countries")
          .then(response => response.json())
          .then((data) => {
+           console.log("All country Data", data)
            const countries = data.map(country =>({
              name: country.country,
              value: country.countryInfo.iso2,
            }))
-           setTableData(data)
-           setCountries(countries)
-           console.log('All Data: ', data)
+
+           const sortedData = sortData(data);
+           setTableData(sortedData);
+           setMapCountries(data);
+           setCountries(countries);
          })
          
     }
@@ -48,21 +59,24 @@ function App() {
   const onCountryChange = async (event) => {
     const countryCode = event.target.value;
     //setCountry(countryCode);
-    const url = countryCode === 'worldwide' 
+    const url = countryCode === "worldwide" 
     ? "https://disease.sh/v3/covid-19/all"
     : `https://disease.sh/v3/covid-19/countries/${countryCode}`;
 
     await fetch(url)
-       .then(response => response.json())
-       .then(data => {
+       .then((response) => response.json())
+       .then((data) => {
          setCountry(countryCode);
-
-         setCountryInfo(data)
+         setCountryInfo(data);
+         
+         setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+         setMapZoom(4); 
        })
+       
   }
 
-  console.log('Country Info Data: ', countryInfo);
-  
+  //console.log('Country Info Data: ', countryInfo);
+  //[data.countryInfo.lat, data.countryInfo.lng]
 
   return (
     <div className="app">
@@ -75,7 +89,7 @@ function App() {
           <MenuItem value="worldwide" >worldwide</MenuItem>
           {
             countries.map(country => (
-              <MenuItem value={country.value}>{country.name}</MenuItem>
+              <MenuItem key={country.id} value={country.value}>{country.name}</MenuItem>
             ))
           }
           
@@ -100,7 +114,8 @@ function App() {
             total={countryInfo.deaths}
           />
         </div>
-        <Map/>
+        
+        <Map MapCountries={mapCountries} center={mapCenter} zoom={mapZoom}/>
       </div>
       
       <Card className="app_right">
