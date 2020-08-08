@@ -79,12 +79,11 @@ const LineGraph = ({ casesType="cases"}) => {
           
         }
         fetchData();
-    },[])
+    },[casesType])
 
 
     return (
         <div>
-            <h2>Covid 19 line graph</h2>
             {data?.length > 0 && (
                 <Line
                 options={options}
